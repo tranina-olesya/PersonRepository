@@ -7,7 +7,10 @@ import com.nc.lab1.checkers.PersonFullnameChecker;
 import com.nc.lab1.comparators.PersonAgeComparator;
 import com.nc.lab1.comparators.PersonDateOfBirthComparator;
 import com.nc.lab1.comparators.PersonFullnameComparator;
+import com.nc.lab1.inject.Injectable;
+import com.nc.lab1.inject.Injector;
 import com.nc.lab1.sorters.PersonSorter;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import java.util.Arrays;
@@ -15,10 +18,16 @@ import java.util.Arrays;
 public class PersonList {
     private Person[] people = new Person[10];
     private int count = 0;
+
+    @Injectable
     private PersonSorter sorter;
-    public PersonList(PersonSorter sorter)
+
+    private static final Logger logger = Logger.getLogger(PersonList.class);
+
+    public PersonList()
     {
-        this.sorter = sorter;
+        logger.info("New PersonList was created");
+        (new Injector()).inject(this);
     }
 
     /**
@@ -38,19 +47,12 @@ public class PersonList {
     {
         if (count >= people.length)
         {
-            /*
-            com.nc.lab1.main.Person[] newPeople = new com.nc.lab1.main.Person[people.length + (people.length >> 1)];
-            for (int i = 0; i < people.length; i++)
-            {
-                newPeople[i] = people[i];
-            }
-            people = newPeople;
-            */
             people = Arrays.copyOf(people, people.length + (people.length >> 1));
         }
 
         people[count] = person;
         count++;
+        logger.debug(String.format("Person (%s) was added to list", person.toString()));
     }
 
     /**
@@ -60,8 +62,11 @@ public class PersonList {
      */
     public Person getById(int id)
     {
-        if (id < count)
+        if (id < count) {
+            logger.debug(String.format("Person with id %d returned", id));
             return people[id];
+        }
+        logger.debug(String.format("Trying to get person with id %d, but nobody found", id));
         return null;
     }
 
@@ -80,7 +85,10 @@ public class PersonList {
             }
 
             people[count] = null;
+            logger.debug(String.format("Person with id %d was deleted", id));
         }
+        else
+            logger.debug(String.format("Trying to delete person with id %d, but nobody found", id));
     }
 
     /**
@@ -91,7 +99,7 @@ public class PersonList {
      */
     private PersonList search(PersonChecker checker, Object value)
     {
-        PersonList res = new PersonList(sorter);
+        PersonList res = new PersonList();
         for (int i = 0; i < count; i++)
             if(checker.check(people[i], value))
                 res.addPerson(people[i]);
@@ -105,6 +113,7 @@ public class PersonList {
      */
     public PersonList searchByFullname(String fullname)
     {
+        logger.debug(String.format("Search people with fullname \'%s\'", fullname));
         return search(new PersonFullnameChecker(), fullname);
     }
 
@@ -115,6 +124,7 @@ public class PersonList {
      */
     public PersonList searchByAge(int age)
     {
+        logger.debug(String.format("Search people with age %d", age));
         return search(new PersonAgeChecker(), age);
     }
 
@@ -125,6 +135,7 @@ public class PersonList {
      */
     public  PersonList searchByDateOfBirth(DateTime dateOfBirth)
     {
+        logger.debug(String.format("Search people with date of birth %s", dateOfBirth.toString("dd.MM.yyyy")));
         return search(new PersonDateOfBirthChecker(), dateOfBirth);
     }
 

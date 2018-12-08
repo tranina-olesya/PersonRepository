@@ -143,7 +143,7 @@ public class PersonTest {
     @Test
     public void testSearchByName()
     {
-        PersonList p = new PersonList(null);
+        PersonList p = new PersonList();
 
         p.addPerson(new Person("Ира", new DateTime(1998, 4, 15, 0,0), Person.Sex.Female));
         for(int i = 0; i < 2; i++)
@@ -152,7 +152,7 @@ public class PersonTest {
         p.addPerson(new Person("Никита", new DateTime(1998, 5, 19, 0,0), Person.Sex.Male));
         p.addPerson(new Person("Настя", new DateTime(1998, 6, 23, 0,0), Person.Sex.Female));
 
-        PersonList expectedPeople = new PersonList(null);
+        PersonList expectedPeople = new PersonList();
         expectedPeople.addPerson(p.getById(1));
         expectedPeople.addPerson(p.getById(2));
 
@@ -165,7 +165,7 @@ public class PersonTest {
     @Test
     public void testSearchByAge()
     {
-        PersonList p = new PersonList(null);
+        PersonList p = new PersonList();
 
         p.addPerson(new Person("Ира", new DateTime(1998, 4, 15, 0,0), Person.Sex.Female));
         for(int i = 0; i < 2; i++)
@@ -174,7 +174,7 @@ public class PersonTest {
         p.addPerson(new Person("Никита", new DateTime(1998, 5, 19, 0,0), Person.Sex.Male));
         p.addPerson(new Person("Настя", new DateTime(1998, 6, 23, 0,0), Person.Sex.Female));
 
-        PersonList expectedPeople = new PersonList(null);
+        PersonList expectedPeople = new PersonList();
         expectedPeople.addPerson(p.getById(0));
 
         PersonList people = p.searchByDateOfBirth(new DateTime(1998, 4, 15, 0,0));
